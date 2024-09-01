@@ -1,0 +1,51 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+input,
+button,
+select {
+  font-family: sans-serif;
+  color: $black;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+input,
+select {
+  outline: none;
+
+  &:focus,
+  &:active,
+  &:focus-within,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1920px;
+  padding: 0 10px;
+  margin: 0 auto;
+  display: block;
+}
+
+img {
+  pointer-events: none;
+}
+
+button {
+  cursor: pointer;
+}
