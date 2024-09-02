@@ -43,13 +43,19 @@ const useCurrencyStore = defineStore('currency', () => {
     });
   } 
 
-  const curreniesList: Ref<ICurrencyList> = ref({} as ICurrencyList);
+  const currenciesList: Ref<ICurrencyList> = ref({} as ICurrencyList);
 
   const initialize = async () => {
     try {
       const response = await $api.currency.getCurrency();
 
-      curreniesList.value = response;
+      const keys = Object.keys(response);
+
+      keys.forEach(key => {
+        if ((key.includes('usd-') || key.includes('rub-') || key.includes('eur-')) && !key.includes('kzt') && !key.includes('idr') && !key.includes('brl')) {
+          currenciesList.value[key] = response[key];
+        }
+      });
     } catch (err) {
       isError.value = true;
     } finally {
@@ -59,7 +65,7 @@ const useCurrencyStore = defineStore('currency', () => {
 
   return {
     isInitialized,
-    curreniesList: skipHydrate(curreniesList),
+    currenciesList: skipHydrate(currenciesList),
     supportedCurrencies,
     activeCurrency,
     initialize,

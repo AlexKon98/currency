@@ -5,11 +5,11 @@
       <form @submit.prevent class="convert-page__form">
         <h2 class="convert-page__form-title">Convert</h2>
 
-        <label class="convert-page__label" for="first">
-          <input class="number" type="number" id="first">
+        <label class="convert-page__label" for="first" :class="{ 'active': isFirstVisible }">
+          <input class="number" type="number" id="first" @input="changeInput('first', $event.target.value)">
 
           <div class="convert-page__dropdown">
-            <div class="convert-page__currency">
+            <div class="convert-page__currency" @click="setFirst" :class="{ 'active': isFirstVisible }">
               <img class="convert-page__flag" v-if="firstActive.name === 'rub'" src="@/assets/icons/ru.svg" alt="">
               <img class="convert-page__flag" v-if="firstActive.name === 'usd'" src="@/assets/icons/us.svg" alt="">
               <img class="convert-page__flag" v-if="firstActive.name === 'eur'" src="@/assets/icons/eu.svg" alt="">
@@ -17,7 +17,7 @@
               <img src="@/assets/icons/dropdown.svg" alt="">
             </div>
 
-            <ul class="convert-page__currencies-list">
+            <ul class="convert-page__currencies-list" :class="{ 'active': isFirstVisible }">
               <li v-for="curr in currencies">
                 <img v-if="curr?.name === 'rub'" src="@/assets/icons/ru.svg" alt="">
                 <img v-if="curr?.name === 'usd'" src="@/assets/icons/us.svg" alt="">
@@ -28,11 +28,11 @@
           </div>
         </label>
 
-        <label class="convert-page__label" for="second">
-          <input class="number" type="number" id="second">
+        <label class="convert-page__label" for="second" :class="{ 'active': isSecondVisible }">
+          <input class="number" type="number" id="second" @input="changeInput('second', $event.target.value)">
 
           <div class="convert-page__dropdown">
-            <div class="convert-page__currency">
+            <div class="convert-page__currency" @click="setSecond" :class="{ 'active': isSecondVisible }">
               <img class="convert-page__flag" v-if="secondActive.name === 'rub'" src="@/assets/icons/ru.svg" alt="">
               <img class="convert-page__flag" v-if="secondActive.name === 'usd'" src="@/assets/icons/us.svg" alt="">
               <img class="convert-page__flag" v-if="secondActive.name === 'eur'" src="@/assets/icons/eu.svg" alt="">
@@ -40,7 +40,7 @@
               <img src="@/assets/icons/dropdown.svg" alt="">
             </div>
 
-            <ul class="convert-page__currencies-list">
+            <ul class="convert-page__currencies-list" :class="{ 'active': isSecondVisible }">
               <li v-for="curr in currencies">
                 <img v-if="curr?.name === 'rub'" src="@/assets/icons/ru.svg" alt="">
                 <img v-if="curr?.name === 'usd'" src="@/assets/icons/us.svg" alt="">
@@ -56,9 +56,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 
 const currency = useCurrency();
+
+const isFirstVisible = ref(false);
+const isSecondVisible = ref(false);
 
 const currencies = ref([
   {
@@ -88,10 +91,28 @@ const firstActive = computed(() => {
 const secondActive = computed(() => {
   return currencies.value.find(curr => curr.isActiveSecond);
 });
+
+const setFirst = () => {
+  isFirstVisible.value = !isFirstVisible.value;
+  isSecondVisible.value = false;
+};
+
+const setSecond = () => {
+  isSecondVisible.value = !isSecondVisible.value;
+  isFirstVisible. value = false;
+};
+
+const changeInput = (ref: string, value) => {
+  console.log(value)
+};
 </script>
 
 <style lang="scss" scoped>
 .number {
+  padding: 0 4px;
+  border-radius: 8px;
+  border: none;
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -115,9 +136,9 @@ const secondActive = computed(() => {
   &__form {
     display: flex;
     flex-direction: column;
-    width: clamp(300px, 50%, 100%);
+    width: minmax(320px, 100%);
     background-color: $grey;
-    padding: 30px;
+    padding: 30px 10px;
     border-radius: 16px;
     margin: 0 auto;
 
@@ -127,19 +148,25 @@ const secondActive = computed(() => {
   }
 
   &__label {
+    position: relative;
     width: 100%;
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
 
+    &.active {
+      z-index: 2;
+    }
+
     input {
       flex: 1;
-      margin-right: 30px;
+      margin-right: 15px;
     }
   }
 
   &__dropdown {
     position: relative;
+    min-width: 82px;
   }
 
   &__currency {
@@ -153,14 +180,14 @@ const secondActive = computed(() => {
       color: $grey2;
     }
 
-    img:not(.header__flag) {
+    img:not(.convert-page__flag) {
       display: block;
       margin-left: 4px;
       transition: transform .4s ease;
     }
 
     &.active {
-      img:not(.header__flag) {
+      img:not(.convert-page__flag) {
         transform: rotate(180deg);
       }
     }

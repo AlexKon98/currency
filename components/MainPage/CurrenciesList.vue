@@ -1,38 +1,22 @@
 <template>
   <div class="currencies">
     <ul class="currencies__list">
-      <li v-if="currency.activeCurrency.name === 'rub' || currency.activeCurrency.name === 'eur'">
-        <span>1</span>
-        <span>{{ currency.activeCurrency.name }}</span>
-        <span>=</span>
-        <span>{{ currency.curreniesList[`${currency.activeCurrency.name}-${currency.activeCurrency.name === 'rub' ?
-          'eur' : 'rub'}`] }}</span>
-        <span>{{ `${currency.activeCurrency.name === 'rub' ? 'eur' : 'rub'}` }}</span>
-      </li>
-
-      <li v-if="currency.activeCurrency.name === 'rub' || currency.activeCurrency.name === 'usd'">
-        <span>1</span>
-        <span>{{ currency.activeCurrency.name }}</span>
-        <span>=</span>
-        <span>{{ currency.curreniesList[`${currency.activeCurrency.name}-${currency.activeCurrency.name === 'rub' ?
-          'usd' : 'rub'}`] }}</span>
-        <span>{{ `${currency.activeCurrency.name === 'rub' ? 'usd' : 'rub'}` }}</span>
-      </li>
-
-      <li v-if="currency.activeCurrency.name === 'eur' || currency.activeCurrency.name === 'usd'">
-        <span>1</span>
-        <span>{{ currency.activeCurrency.name }}</span>
-        <span>=</span>
-        <span>{{ currency.curreniesList[`${currency.activeCurrency.name}-${currency.activeCurrency.name === 'eur' ?
-          'usd' : 'eur'}`] }}</span>
-        <span>{{ `${currency.activeCurrency.name === 'usd' ? 'eur' : 'usd'}` }}</span>
-      </li>
+      <template v-for="curr in Object.keys(currency.currenciesList)" :key="curr">
+        <li v-if="curr.startsWith(currency.activeCurrency.name)">
+          <span>1</span>
+          <span>{{ currency.activeCurrency.name }}</span>
+          <span>=</span>
+          <span>{{ currency.currenciesList[curr] }}</span>
+          <span>{{ curr.replace(`${currency.activeCurrency.name}-`, '') }}</span>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
 
 <script lang="ts" setup>
 const currency = useCurrency();
+console.log(currency.currenciesList)
 </script>
 
 <style lang="scss" scoped>
